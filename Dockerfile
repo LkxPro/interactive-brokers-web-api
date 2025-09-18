@@ -8,6 +8,10 @@ RUN apt-get install -y openjdk-17-jre-headless \
                        unzip curl procps vim net-tools \
                        python3 python3-pip python3.11-venv
 
+# Install uv for Python dependency management
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:${PATH}"
+
 # We will put everything in the /app directory
 WORKDIR /app
 
