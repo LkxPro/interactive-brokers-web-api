@@ -10,4 +10,4 @@ services:
       - "5055:5055"
       - "5056:5056"
     volumes:
-      - ./webapp:/app/webapp
+      - .:/app

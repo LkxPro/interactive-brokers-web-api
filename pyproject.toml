@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ibkr-web"
+version = "0.1.0"
+description = "Interactive Brokers Client Portal web UI and utilities"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    {name = "Interactive Brokers Web API Maintainers"}
+]
+dependencies = [
+    "flask>=2.3",
+    "requests>=2.31",
+    "typer>=0.9",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "requests-mock>=1.11",
+    "ruff>=0.4",
+]
+
+[project.scripts]
+ibkr-web = "ibkr_web.__main__:main"
+ibkr-rest = "ibkr_web.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+ibkr_web = [
+    "templates/*.html",
+]
+
+[tool.flask]
+app = "ibkr_web.app:create_app"

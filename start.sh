@@ -1,12 +1,23 @@
-cd gateway && sh bin/run.sh root/conf.yaml &
+#!/usr/bin/env bash
+set -euo pipefail
 
-cd webapp || exit 1
+ROOT_DIR=$(cd "$(dirname "$0")" && pwd)
+GATEWAY_DIR="${ROOT_DIR}/gateway"
+VENV_DIR="${ROOT_DIR}/.venv"
 
-if [ ! -d .venv ]; then
-    uv venv .venv
+if [ -d "${GATEWAY_DIR}" ]; then
+  (cd "${GATEWAY_DIR}" && sh bin/run.sh root/conf.yaml &)
+  GATEWAY_PID=$!
+  trap 'kill ${GATEWAY_PID} >/dev/null 2>&1 || true' EXIT
 fi
 
-. .venv/bin/activate
-uv pip install -r requirements.txt
+if [ ! -d "${VENV_DIR}" ]; then
+  uv venv "${VENV_DIR}"
+fi
 
-flask --app app run --debug -p 5056 -h 0.0.0.0
+# shellcheck disable=SC1091
+. "${VENV_DIR}/bin/activate"
+uv pip install -e "${ROOT_DIR}"
+
+export FLASK_APP="ibkr_web.app:create_app"
+flask run --debug -p 5056 -h 0.0.0.0
